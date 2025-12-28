@@ -7,6 +7,8 @@
 #include <regex>
 #include <type_traits>
 
+#include "debug.hpp"
+
 namespace spaceless {
 
 inline constexpr double eps = 1e-15;

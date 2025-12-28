@@ -104,7 +104,6 @@ static void test_empty_logging() {
 }
 
 int main(int argc, char **argv) {
-	std::ios_base::sync_with_stdio(false);
 	init(argc, argv, { .logging_option = logging::init_option::all });
 	logging::set_level(log_level::debug);
 

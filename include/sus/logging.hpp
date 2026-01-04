@@ -58,10 +58,11 @@ public:
 		flag flags = all;
 		log_level level = log_level::info;
 	};
-	static void init(std::string_view program, init_option option = {});
+	static void init(std::string_view program, init_option option);
 	static void set_level(log_level l) noexcept;
 	static log_level level() noexcept;
 	static void register_logger(std::unique_ptr<logger> lg);
+	static void register_wrapper_logger(std::unique_ptr<logger> lg);
 	static void log(log_record record) noexcept;
 	static void flush() noexcept;
 };

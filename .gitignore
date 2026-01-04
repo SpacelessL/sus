@@ -41,5 +41,8 @@
 *.dwo
 
 build*
-out
+out*
 .vs
+.vscode
+.venv
+.claude

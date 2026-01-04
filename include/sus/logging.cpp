@@ -90,7 +90,13 @@ public:
 		loggers_.emplace_back(std::move(lg));
 	}
 
+	void register_wrapper_logger(std::unique_ptr<logger> lg) {
+		wrapper_loggers_.emplace_back(std::move(lg));
+	}
+
 	void append(log_record record) noexcept {
+		for (auto &&lg : wrapper_loggers_)
+			lg->log(record);
 		mpsc_queue_.enqueue(std::move(record));
 	}
 
@@ -130,7 +136,7 @@ private:
 		flush_cv_.notify_one();
 	}
 
-	std::vector<std::unique_ptr<logger>> loggers_;
+	std::vector<std::unique_ptr<logger>> loggers_, wrapper_loggers_;
 	std::mutex log_mutex_, flush_cv_mutex_;
 	std::condition_variable flush_cv_;
 	std::atomic_bool need_flush_ = false;
@@ -223,6 +229,10 @@ log_level logging::level() noexcept {
 
 void logging::register_logger(std::unique_ptr<logger> lg) {
 	get_logger_manager().register_logger(std::move(lg));
+}
+
+void logging::register_wrapper_logger(std::unique_ptr<logger> lg) {
+	get_logger_manager().register_wrapper_logger(std::move(lg));
 }
 
 void logging::log(log_record record) noexcept {

@@ -1,4 +1,4 @@
-set(SOURCES
+add_library(sus
 	sus/internal/mpsc_queue.hpp
 	sus/arguments.hpp
 	sus/arguments.cpp
@@ -20,14 +20,13 @@ set(SOURCES
 	sus.cpp
 )
 
-add_library(sus ${SOURCES})
 set_target_properties(sus PROPERTIES LINKER_LANGUAGE CXX)
 target_include_directories(sus PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+target_compile_options(sus PRIVATE -Wno-interference-size)
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
 	target_link_libraries(sus PUBLIC stdc++exp)
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-	target_link_libraries(sus PUBLIC stdc++exp)
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-	target_compile_options(sus PUBLIC "/Zc:preprocessor")
+elseif(MSVC)
+	target_compile_options(sus PUBLIC /Zc:preprocessor)
 endif()

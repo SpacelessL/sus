@@ -22,7 +22,7 @@ public:
 	constexpr accumulator &operator += (T x) noexcept { add(x); return *this; }
 	constexpr accumulator &operator -= (T x) noexcept { return *this += -x; }
 
-	constexpr [[nodiscard]] operator T() const noexcept { return sum_ + comp_; }
+	[[nodiscard]] constexpr operator T() const noexcept { return sum_ + comp_; }
 
 private:
 	constexpr void add(T x) noexcept {
@@ -41,7 +41,7 @@ private:
 template<std::ranges::input_range Range>
 accumulator(Range &&) -> accumulator<std::remove_cv_t<std::ranges::range_value_t<Range>>>;
 
-constexpr [[nodiscard]] auto squared(const auto &t) noexcept(noexcept(t * t)) { return t * t; }
-constexpr [[nodiscard]] auto cubed(const auto &t) noexcept(noexcept(t * t * t)) { return t * t * t; }
+[[nodiscard]] constexpr auto squared(const auto &t) noexcept(noexcept(t * t)) { return t * t; }
+[[nodiscard]] constexpr auto cubed(const auto &t) noexcept(noexcept(t * t * t)) { return t * t * t; }
 
 }

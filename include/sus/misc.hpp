@@ -153,8 +153,8 @@ public:
 	[[nodiscard]] std::optional<result> update(std::chrono::duration<double> interval) noexcept {
 		if (auto res = counter_.update(current().time_since_epoch().count(), std::chrono::duration_cast<typename clock::duration>(interval).count()); res)
 			return result{ .index = res->index
-				, .last = clock::time_point(clock::duration(res->last))
-				, .cur = clock::time_point(clock::duration(res->cur)) };
+				, .last = typename clock::time_point(typename clock::duration(res->last))
+				, .cur = typename clock::time_point(typename clock::duration(res->cur)) };
 		return std::nullopt;
 	}
 	[[nodiscard]] std::optional<result> update(double interval_seconds) noexcept {

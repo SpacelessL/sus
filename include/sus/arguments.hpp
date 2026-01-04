@@ -11,7 +11,7 @@ public:
 	arguments_manager(int argc, char **argv);
 
 	template<typename T>
-	[[nodiscard]] T *get(std::string_view name) noexcept requires !std::is_void_v<T>{
+	[[nodiscard]] T *get(std::string_view name) noexcept {
 		return std::any_cast<T>(get_any(name));
 	}
 

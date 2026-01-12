@@ -9,7 +9,8 @@
 #include <queue>
 
 #include "debug.hpp"
-#include "misc.hpp"
+#include "rate_limit.hpp"
+#include "scope_guard.hpp"
 #include "enum.hpp"
 #include "time.hpp"
 

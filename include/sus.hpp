@@ -7,6 +7,9 @@
 #include "sus/math.hpp"
 #include "sus/misc.hpp"
 #include "sus/progress_bar.hpp"
+#include "sus/random.hpp"
+#include "sus/rate_limit.hpp"
+#include "sus/scope_guard.hpp"
 #include "sus/stop_watch.hpp"
 #include "sus/enum.hpp"
 

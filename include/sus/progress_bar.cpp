@@ -1,5 +1,7 @@
 #include "progress_bar.hpp"
 
+#include <cmath>
+
 namespace spaceless {
 
 class sub_progress_bar : public progress_bar {

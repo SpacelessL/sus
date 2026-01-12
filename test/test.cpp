@@ -69,10 +69,11 @@ static void use_assert() {
 
 static void use_progress_bar() {
 	{
-		auto ptr = logging_progress_bar::create("test", 0);
+		auto ptr = logging_progress_bar::create("test", 3);
 		int r = 1000000;
 		ptr->set_range(r);
 		for (int i = 0; i < r; i++) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 			ptr->add(1);
 		}
 		LOG(info)("done!");
@@ -109,13 +110,13 @@ int main(int argc, char **argv) {
 
 	timer t("program");
 
-	//test_empty_logging();
+	// test_empty_logging();
 
-	//use_progress_bar();
+	use_progress_bar();
 
-	//use_logging();
+	// use_logging();
 
-	//use_assert();
+	// use_assert();
 
 	logging::flush();
 	return 0;

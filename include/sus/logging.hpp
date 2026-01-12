@@ -186,7 +186,7 @@ struct formatter<spaceless::log_record> {
 
 		auto get_scope = [&](std::string_view begin, std::string_view end) {
 			write_sv(begin);
-			return spaceless::scope_guard(write_sv, end);
+			return spaceless::scope_guard(write_sv, std::move(end));
 		};
 
 		if (source) {

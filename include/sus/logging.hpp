@@ -220,13 +220,13 @@ struct formatter<spaceless::log_record> {
 						auto in_time_t = system_clock::to_time_t(tp_sec);
 						auto ms = static_cast<int>(duration_cast<milliseconds>(record.time - tp_sec).count());
 
-						if (std::strftime(buffer, sizeof(buffer), ":%F %T", ::spaceless::gmtime_safe(&in_time_t)))
+						if (std::strftime(buffer, sizeof(buffer), ":%F %T", ::spaceless::localtime_safe(&in_time_t)))
 							write_sv(buffer);
 
 						write_ch('.');
 						out = std::format_to(out, "{:03}", ms);
 
-						if (std::strftime(buffer, sizeof(buffer), " %Ez", ::spaceless::gmtime_safe(&in_time_t)))
+						if (std::strftime(buffer, sizeof(buffer), " %Ez", ::spaceless::localtime_safe(&in_time_t)))
 							write_sv(buffer);
 					}
 					write_ch(' ');

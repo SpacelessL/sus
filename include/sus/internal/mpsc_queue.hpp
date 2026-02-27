@@ -42,7 +42,7 @@ public:
 
 		if (slot.sequence.load(std::memory_order_acquire) != head_ + 1) return std::nullopt;
 
-		T result = std::move(*slot.data());
+		std::optional<T> result(std::move(*slot.data()));
 		slot.reset(head_++ + capacity_);
 
 		return result;
@@ -69,7 +69,7 @@ private:
 
 		template<typename ...Args>
 		void emplace(size_t seq, Args &&...args) noexcept(std::is_nothrow_constructible_v<T, Args...>) {
-			std::construct_at(data(), std::forward<Args>(args)...);
+			std::construct_at(reinterpret_cast<T *>(storage.data()), std::forward<Args>(args)...);
 			sequence.store(seq, std::memory_order_release);
 			sequence.notify_one();
 		}

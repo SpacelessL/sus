@@ -137,26 +137,25 @@ uint8_t(::spaceless::log_level::lvl) < SUS_LOG_LEVEL || ::spaceless::log_level::
 
 }
 
-namespace std {
 template<>
-struct formatter<spaceless::log_record> {
+struct std::formatter<spaceless::log_record> {
 	bool color = false, line_break = true, source = true, message = true;
 	template<class ParseContext>
 	[[nodiscard]] constexpr auto parse(ParseContext &ctx) {
 		auto it = ctx.begin();
 		for (; it != ctx.end() && *it != '}'; ++it) {
 			switch (*it) {
-			case 'c': color = true; break;
-			case 's': source = true; message = false; break;
-			case 'm': source = false; message = true; break;
-			case 'f': line_break = false; break;
-			default: throw std::format_error("Invalid format specifier for log_record");
+				case 'c': color = true; break;
+				case 's': source = true; message = false; break;
+				case 'm': source = false; message = true; break;
+				case 'f': line_break = false; break;
+				default: throw std::format_error("Invalid format specifier for log_record");
 			}
 		}
 		return it;
 	}
 	template<class FmtContext>
-	typename FmtContext::iterator format(const spaceless::log_record &record, FmtContext &ctx) const {
+	FmtContext::iterator format(const spaceless::log_record &record, FmtContext &ctx) const {
 		std::string_view level;
 		std::string_view color_begin, color_end = "\033[0m", loc_color_begin = "\033[90m";
 		switch (record.level) {
@@ -194,21 +193,21 @@ struct formatter<spaceless::log_record> {
 
 			{
 				auto bracket_scope = get_scope("[", "]");
-				auto scope = get_scope(loc_color_begin, color_end);
+				ANON(scope) = get_scope(loc_color_begin, color_end);
 				{
-					auto scope = get_scope("`", "`");
+					ANON(scope) = get_scope("`", "`");
 					write_sv(loc.function_name());
 				}
 
 				if (line_break) write_ch('\n'); else write_ch(' ');
 
 				{
-					auto scope = get_scope(color_begin, color_end);
+					ANON(scope) = get_scope(color_begin, color_end);
 					write_sv(level);
 				}
 
 				{
-					auto scope = get_scope(loc_color_begin, color_end);
+					ANON(scope) = get_scope(loc_color_begin, color_end);
 					out = std::format_to(out, "{}", record.thread_id);
 					write_ch(' ');
 
@@ -234,7 +233,7 @@ struct formatter<spaceless::log_record> {
 					write_sv(file);
 
 					{
-						auto scope = get_scope("(", ")");
+						ANON(scope) = get_scope("(", ")");
 						write_int(loc.line()); write_ch(':'); write_int(loc.column());
 					}
 				}
@@ -244,11 +243,10 @@ struct formatter<spaceless::log_record> {
 		}
 
 		if (message) {
-			auto scope = get_scope(color_begin, color_end);
+			ANON(scope) = get_scope(color_begin, color_end);
 			write_sv(record.message);
 		}
 
 		return out;
 	}
 };
-}

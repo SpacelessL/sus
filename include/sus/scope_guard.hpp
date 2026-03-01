@@ -45,7 +45,7 @@ template<bool Success, typename Func, typename... Args>
 class scope_guard_for_exception {
 public:
 	template<typename F, typename... A>
-	scope_guard_for_exception(F &&func, A&&... args) : guard_(std::forward<F>(func), std::forward<A>(args)...) {
+	explicit scope_guard_for_exception(F &&func, A&&... args) : guard_(std::forward<F>(func), std::forward<A>(args)...) {
 		count_ = std::uncaught_exceptions();
 	}
 
@@ -63,17 +63,24 @@ private:
 };
 
 template<typename Func, typename... Args>
-using scope_guard_without_exception = scope_guard_for_exception<true, Func, Args...>;
-template<typename Func, typename... Args>
-using scope_guard_with_exception = scope_guard_for_exception<false, Func, Args...>;
+class scope_guard_without_exception : public scope_guard_for_exception<true, Func, Args...> {
+	using scope_guard_for_exception<true, Func, Args...>::scope_guard_for_exception;
+};
 
+template<typename Func, typename... Args>
+class scope_guard_with_exception : public scope_guard_for_exception<false, Func, Args...> {
+	using scope_guard_for_exception<false, Func, Args...>::scope_guard_for_exception;
+};
+
+template<typename Func, typename... Args>
+scope_guard_without_exception(Func&&, Args&&...) -> scope_guard_without_exception<Func, Args...>;
+template<typename Func, typename... Args>
+scope_guard_with_exception(Func&&, Args&&...) -> scope_guard_with_exception<Func, Args...>;
 template<typename Func, typename... Args>
 scope_guard(Func&&, Args&&...) -> scope_guard<Func, Args...>;
-template<bool Success, typename Func, typename... Args>
-scope_guard_for_exception(Func&&, Args&&...) -> scope_guard_for_exception<Success, Func, Args...>;
 
-#define SCOPE_EXIT(...) auto ANON(scope_guard) = ::spaceless::scope_guard(__VA_ARGS__)
-#define SCOPE_SUCC(...) auto ANON(scope_guard) = ::spaceless::scope_guard_without_exception(__VA_ARGS__)
-#define SCOPE_FAIL(...) auto ANON(scope_guard) = ::spaceless::scope_guard_with_exception(__VA_ARGS__)
+#define SCOPE_EXIT(...) ANON(scope_guard) = ::spaceless::scope_guard(__VA_ARGS__)
+#define SCOPE_SUCC(...) ANON(scope_guard) = ::spaceless::scope_guard_without_exception(__VA_ARGS__)
+#define SCOPE_FAIL(...) ANON(scope_guard) = ::spaceless::scope_guard_with_exception(__VA_ARGS__)
 
 }

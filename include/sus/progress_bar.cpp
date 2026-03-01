@@ -25,9 +25,9 @@ private:
 
 void progress_bar::set_range(double min, double max) {
 	min_ = min; max_ = max;
-	value_.store(min, std::memory_order_acquire);
-	last_value_.store(min, std::memory_order_acquire);
-	speed_.store(0, std::memory_order_acquire);
+	value_.store(min, std::memory_order_release);
+	last_value_.store(min, std::memory_order_release);
+	speed_.store(0, std::memory_order_release);
 	counter_.force_update();
 	timer_.reset(false);
 }
@@ -55,8 +55,8 @@ void progress_bar::on_update(double v, const time_rate_limited_counter<>::result
 	double new_speed;
 	if (std::isnan(last_speed)) new_speed = cur_speed;
 	else if (std::isnan(cur_speed)) new_speed = last_speed;
-	else if (std::isinf(last_speed)) new_speed = cur_speed;
-	else if (std::isinf(cur_speed)) new_speed = last_speed;
+	else if (!std::isfinite(last_speed)) new_speed = cur_speed;
+	else if (!std::isfinite(cur_speed)) new_speed = last_speed;
 	else new_speed = std::lerp(cur_speed, last_speed, alpha);
 
 	speed_.store(new_speed, std::memory_order_release);

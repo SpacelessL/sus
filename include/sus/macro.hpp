@@ -22,4 +22,4 @@
 
 #define CONCAT2(x, y) SUS_DETAIL_CONCAT2_IMPL(x, y)
 
-#define ANON(prefix) CONCAT2(_anon_##prefix##_, __COUNTER__)
+#define ANON(prefix) auto CONCAT2(_anon_##prefix##_, __COUNTER__)

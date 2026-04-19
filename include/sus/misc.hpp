@@ -34,4 +34,16 @@ template<typename... Args>
 	return std::views::iota(0, int(sizeof...(args))) | std::views::transform([arr = std::vector{ &args... }](int i) -> decltype(auto) { return *arr[i]; });
 }
 
+template<typename Head, typename ...>
+struct head_of { using type = Head; };
+
+template<typename ...Args>
+using head_of_t = typename head_of<Args...>::type;
+
+template<typename ...Args>
+struct tail_of { using type = std::tuple_element_t<sizeof...(Args) - 1, std::tuple<Args...>>; };
+
+template<typename ...Args>
+using tail_of_t = typename tail_of<Args...>::type;
+
 }
